@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('users_id')->constrained()->onDelete('cascade');
             $table->string('nama_lengkap');
             $table->string('nomor_telepon');
+            $table->string('instagram')->nullable();
             $table->string('jenis_kelamin');
             $table->date('tanggal_lahir');
             $table->string('avatar_url')->nullable();

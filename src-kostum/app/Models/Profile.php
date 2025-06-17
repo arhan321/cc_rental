@@ -11,7 +11,7 @@ class Profile extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'users_id', 'nama_lengkap', 'nomor_telepon', 'jenis_kelamin', 'tanggal_lahir', 'avatar_url'
+        'users_id', 'nama_lengkap', 'nomor_telepon', 'jenis_kelamin', 'tanggal_lahir', 'avatar_url', 'instagram',
     ];
 
     // Relasi ke tabel User

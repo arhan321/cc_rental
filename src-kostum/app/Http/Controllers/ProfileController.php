@@ -10,7 +10,7 @@ use App\Models\Profile;
 class ProfileController extends Controller
 {
     /* ==========================================================
-       1)  Tampilan profil (hanya view)
+       1) Tampilan profil
        ========================================================== */
     public function show()
     {
@@ -18,12 +18,12 @@ class ProfileController extends Controller
 
         return view('frontend.profile', [
             'profile' => $profile,
-            'mode'    => 'view',          // ⬅️ flag utk Blade
+            'mode'    => 'view',
         ]);
     }
 
     /* ==========================================================
-       2)  Form edit profil
+       2) Form edit profil
        ========================================================== */
     public function edit()
     {
@@ -31,35 +31,50 @@ class ProfileController extends Controller
 
         return view('frontend.profile', [
             'profile' => $profile,
-            'mode'    => 'edit',          // ⬅️ flag utk Blade
+            'mode'    => 'edit',
         ]);
     }
 
     /* ==========================================================
-       3)  Simpan perubahan
+       3) Simpan perubahan
        ========================================================== */
     public function update(Request $request)
     {
         $profile = Profile::where('users_id', Auth::id())->firstOrFail();
 
         $validated = $request->validate([
-            'nama_lengkap'   => 'required|string|max:255',
-            'nomor_telepon'  => 'required|string|max:30',
-            'tanggal_lahir'  => 'required|date',
-            'jenis_kelamin'  => 'required|in:Pria,Wanita',
-            'avatar'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'nama_lengkap'   => ['required', 'string', 'max:255'],
+            'nomor_telepon'  => ['required', 'string', 'max:30'],
+            'tanggal_lahir'  => ['required', 'date'],
+            'jenis_kelamin'  => ['required', 'in:Pria,Wanita'],
+
+            // ─── Instagram ─────────────────────────────────────
+            //   • opsional, max 30 (batas IG) + “@” di depan boleh tidak
+            //   • hanya huruf, angka, titik, dan underscore
+            'instagram'      => ['nullable', 'string', 'max:255',
+                                 'regex:/^@?[A-Za-z0-9._]{1,30}$/'],
+
+            // ─── Foto ──────────────────────────────────────────
+            'avatar'         => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+        ], [
+            'instagram.regex' => 'Format Instagram tidak valid.',
         ]);
 
-        /* ---------- simpan avatar bila ada ---------- */
+        /* ── Normalisasi handle IG: buang "@" di depan ───────── */
+        if (isset($validated['instagram'])) {
+            $validated['instagram'] = ltrim($validated['instagram'], '@');
+        }
+
+        /* ── Upload avatar (jika ada) ────────────────────────── */
         if ($request->hasFile('avatar')) {
-            // hapus lama bila ada
             if ($profile->avatar_url && Storage::disk('public')->exists($profile->avatar_url)) {
                 Storage::disk('public')->delete($profile->avatar_url);
             }
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $validated['avatar_url'] = $path;
+            $validated['avatar_url'] = $request->file('avatar')
+                                              ->store('avatars', 'public');
         }
 
+        /* ── Simpan ke database ─────────────────────────────── */
         $profile->update($validated);
 
         return redirect()

@@ -27,7 +27,7 @@ class ProfileResource extends Resource
         return $form
             ->schema([
                 Select::make('users_id')
-                    ->relationship('users', 'name', function ($query) {
+                    ->relationship('user', 'name', function ($query) {
                         $query->whereHas('roles', function ($roleQuery) {
                             $roleQuery->where('name', 'User');
                         });
@@ -39,6 +39,12 @@ class ProfileResource extends Resource
                 Forms\Components\TextInput::make('nomor_telepon')
                     ->label('Nomor Telepon')
                     ->required(),
+                Forms\Components\TextInput::make('instagram')
+                ->label('Instagram')
+                ->placeholder('@username')
+                ->regex('/^@?[A-Za-z0-9._]{1,30}$/')
+                ->maxLength(255)
+                ->helperText('Opsional — huruf, angka, titik, underscore (maks 30).'),
                 Forms\Components\Select::make('jenis_kelamin')
                     ->label('Jenis Kelamin')
                     ->options([
@@ -72,6 +78,10 @@ class ProfileResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nomor_telepon')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('instagram')
+                ->label('Instagram')
+                ->searchable()
+                ->formatStateUsing(fn ($state) => $state ? '@'.$state : '-'),
                 Tables\Columns\TextColumn::make('jenis_kelamin')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_lahir')

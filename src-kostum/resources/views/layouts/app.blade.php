@@ -25,9 +25,11 @@
   <div class="container px-3 d-flex justify-content-between align-items-center">
 
     <!-- LOGO -->
-    <a class="navbar-brand fw-bold d-flex align-items-center" href="#" style="color: #6b21a8;">
-      <i class="bi bi-disc me-2 fs-2"></i> CCC RENTAL
-    </a>
+    <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
+    <img src="{{ asset('front/assets/logo.png') }}"
+         alt="CCC Rental Logo" style="height:48px; width:auto;">
+    <span class="fw-bold ms-2" style="color:#6b21a8;">CCC RENTAL</span>
+</a>
 
     <!-- HAMBURGER (mobile) -->
     <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

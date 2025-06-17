@@ -54,4 +54,6 @@ Route::get('/histori', [OrderController::class, 'history'])->name('frontend.hist
     // proses simpan
     Route::put('/profile',        [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::get('/pay-again/{order}',  [OrderController::class, 'payAgain'])
+         ->name('orders.payAgain');
 });

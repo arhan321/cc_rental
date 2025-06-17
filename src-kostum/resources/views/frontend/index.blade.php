@@ -209,7 +209,8 @@
      data-kostums-id="{{ $kostum->id }}"
      data-category="{{ $kostum->category->name }}" 
      data-price="{{ $kostum->harga_sewa }}" 
-     data-size="{{ $kostum->ukuran }}" >
+     data-size="{{ $kostum->ukuran }}" 
+     data-status="{{ $locked ? 'booked' : 'available' }}">
     <div class="card h-100 shadow-sm">
         <img src="{{ asset('storage/' . $kostum->image) }}" class="card-img-top" alt="{{ $kostum->nama_kostum }}">
         <div class="card-body">

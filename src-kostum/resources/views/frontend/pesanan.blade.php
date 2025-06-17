@@ -3,7 +3,6 @@
 
 @section('content')
 @php
-    /** util class badge status */
     function badge($st) {
         return [
             'Menunggu'      => 'bg-secondary',
@@ -41,7 +40,6 @@
 
           @foreach ($orders as $order)
             @php
-                /* ringkasan nama kostum */
                 $kostumList = $order->orderItems
                     ->map(fn($i) => optional($i->kostums)->nama_kostum)
                     ->filter()
@@ -50,14 +48,14 @@
 
             <div class="card shadow-sm border-0 p-3" style="min-width:250px">
               <div class="card-body">
+
                 <h6 class="fw-semibold mb-2">
                   ID: <span class="text-muted">#{{ $order->nomor_pesanan }}</span>
                 </h6>
 
                 <p class="mb-1 small">
                   <i class="bi bi-calendar-event me-1"></i>
-                  {{ \Carbon\Carbon::parse($order->tanggal_order)
-                        ->translatedFormat('d F Y') }}
+                  {{ \Carbon\Carbon::parse($order->tanggal_order)->translatedFormat('d F Y') }}
                 </p>
 
                 <p class="mb-1 small">
@@ -79,7 +77,15 @@
                   {{ $order->status }}
                 </span><br>
 
-                <button class="btn btn-sm btn-gradient-purple mt-3"
+                {{-- ====== BAYAR LAGI (kartu) ====== --}}
+                @if($order->status === 'Menunggu')
+                  <button class="btn btn-sm btn-gradient-purple mt-3 pay-again"
+                          data-order="{{ $order->id }}">
+                    Bayar Lagi
+                  </button>
+                @endif
+
+                <button class="btn btn-sm btn-outline-secondary mt-2"
                         data-bs-toggle="modal"
                         data-bs-target="#modalPesanan{{ $order->id }}">
                   Lihat Detail
@@ -88,8 +94,7 @@
             </div>
 
             {{-- ===== MODAL DETAIL PESANAN ===== --}}
-            <div class="modal fade" id="modalPesanan{{ $order->id }}"
-                 tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="modalPesanan{{ $order->id }}" tabindex="-1">
               <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content rounded-4 shadow border-0">
 
@@ -102,24 +107,17 @@
                   </div>
 
                   <div class="modal-body px-4 py-3">
-
-                    {{-- tabel daftar kostum --}}
+                    {{-- tabel kostum --}}
                     <table class="table table-sm align-middle mb-4">
                       <thead class="table-light">
-                        <tr>
-                          <th>Kostum</th>
-                          <th>Ukuran</th>
-                          <th>Harga</th>
-                        </tr>
+                        <tr><th>Kostum</th><th>Ukuran</th><th>Harga</th></tr>
                       </thead>
                       <tbody>
                         @foreach ($order->orderItems as $it)
                           <tr>
                             <td>{{ $it->kostums->nama_kostum ?? '—' }}</td>
                             <td>{{ $it->ukuran }}</td>
-                            <td>
-                              Rp{{ number_format($it->harga_sewa,0,',','.') }}
-                            </td>
+                            <td>Rp{{ number_format($it->harga_sewa,0,',','.') }}</td>
                           </tr>
                         @endforeach
                       </tbody>
@@ -127,42 +125,20 @@
 
                     {{-- RINGKASAN --}}
                     <div class="row gy-2 mb-3">
-
-                      <div class="col-md-4">
-                        <strong>Tanggal Order:</strong><br>
-                        <span class="text-muted">
-                          {{ \Carbon\Carbon::parse($order->tanggal_order)
-                                ->translatedFormat('d F Y') }}
-                        </span>
+                      <div class="col-md-4"><strong>Tanggal Order:</strong><br>
+                        <span class="text-muted">{{ \Carbon\Carbon::parse($order->tanggal_order)->translatedFormat('d F Y') }}</span>
                       </div>
-
-                      <div class="col-md-4">
-                        <strong>Batas Sewa:</strong><br>
-                        <span class="text-muted">
-                          {{ \Carbon\Carbon::parse($order->tanggal_batas_sewa)
-                                ->translatedFormat('d F Y') }}
-                        </span>
+                      <div class="col-md-4"><strong>Batas Sewa:</strong><br>
+                        <span class="text-muted">{{ \Carbon\Carbon::parse($order->tanggal_batas_sewa)->translatedFormat('d F Y') }}</span>
                       </div>
-
-                      <div class="col-md-4">
-                        <strong>Durasi Sewa:</strong><br>
-                        <span class="text-muted">
-                          {{ $order->durasi_sewa }} hari
-                        </span>
+                      <div class="col-md-4"><strong>Durasi Sewa:</strong><br>
+                        <span class="text-muted">{{ $order->durasi_sewa }} hari</span>
                       </div>
-
-                      <div class="col-md-4">
-                        <strong>Status:</strong><br>
-                        <span class="badge {{ badge($order->status) }}">
-                          {{ $order->status }}
-                        </span>
+                      <div class="col-md-4"><strong>Status:</strong><br>
+                        <span class="badge {{ badge($order->status) }}">{{ $order->status }}</span>
                       </div>
-
-                      <div class="col-md-4">
-                        <strong>Total Bayar:</strong><br>
-                        <span class="text-muted">
-                          Rp{{ number_format($order->total_harga,0,',','.') }}
-                        </span>
+                      <div class="col-md-4"><strong>Total Bayar:</strong><br>
+                        <span class="text-muted">Rp{{ number_format($order->total_harga,0,',','.') }}</span>
                       </div>
                     </div>
 
@@ -171,7 +147,15 @@
                   </div>
 
                   <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-gradient-purple px-4"
+                    {{-- ====== BAYAR LAGI (modal) ====== --}}
+                    @if($order->status === 'Menunggu')
+                      <button class="btn btn-gradient-purple pay-again"
+                              data-order="{{ $order->id }}">
+                        Bayar Lagi
+                      </button>
+                    @endif
+
+                    <button type="button" class="btn btn-outline-secondary"
                             data-bs-dismiss="modal">Tutup</button>
                   </div>
 
@@ -184,8 +168,8 @@
         @else
           <div class="alert alert-info mt-3">Belum ada pesanan yang terdaftar.</div>
         @endif
-      </div>{{-- /hero-text --}}
-    </div>{{-- /hero-card --}}
+      </div>
+    </div>
   </div>
 </section>
 @endsection

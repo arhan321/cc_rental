@@ -31,7 +31,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="registrationDate" class="form-label small fw-semibold">Tanggal Registrasi</label>
+        <label for="registrationDate" class="form-label small fw-semibold">Tanggal Lahir</label>
         <input type="date" class="form-control custom-focus" id="registrationDate" name="tanggal_lahir" required>
       </div>
 

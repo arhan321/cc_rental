@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Order, OrderItem, Kostum, ProductSchedule};
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Illuminate\Http\JsonResponse;
 use Midtrans\Snap;
 use Midtrans\Config;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+use App\Models\{Order, OrderItem, Kostum, ProductSchedule};
 
 class OrderController extends Controller
 {
@@ -182,4 +183,37 @@ class OrderController extends Controller
 
         return view('frontend.histori', compact('orders'));
     }
+
+    public function payAgain(Order $order): JsonResponse
+{
+    // verifikasi: hanya pemilik & status masih Menunggu
+    if ($order->profile_id !== auth()->user()->profile->id) {
+        return response()->json(['message'=>'Forbidden'], Response::HTTP_FORBIDDEN);
+    }
+    if ($order->status !== 'Menunggu') {
+        return response()->json(['message'=>'Pembayaran sudah diproses'], 422);
+    }
+
+    // buat Snap token baru
+    $orderIdFull = $order->nomor_pesanan . '-' . now()->timestamp;
+
+    $snapToken = \Midtrans\Snap::getSnapToken([
+        'transaction_details' => [
+            'order_id'     => $orderIdFull,
+            'gross_amount' => $order->total_harga,
+        ],
+        'customer_details' => [
+            'first_name' => $order->profile->nama_lengkap,
+            'email'      => $order->profile->user->email,
+            'phone'      => $order->profile->nomor_telepon,
+        ],
+    ]);
+
+    $order->update(['snap_token' => $snapToken]); // opsional
+
+    return response()->json([
+        'snap_token'    => $snapToken,
+        'order_id_full' => $orderIdFull,
+    ]);
+}
 }
