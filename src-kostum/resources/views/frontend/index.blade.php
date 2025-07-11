@@ -16,42 +16,54 @@
         </h1>
 
         <!-- Toggle Info -->
-        <!-- <button class="btn-toggle-info mt-3 text-md-start text-start"
+         <button class="btn-toggle-info mt-3 text-md-start text-start"
                 type="button" data-bs-toggle="collapse" data-bs-target="#infoSewa" aria-expanded="false">
           <i class="bi bi-info-circle-fill me-2 fs-5"></i> Bagaimana cara sewa?
-        </button> -->
+        </button> 
 
         <!-- Info Penyewaan -->
-        <!-- <div class="collapse mt-3 transition-collapse" id="infoSewa">
-      <ul class="list-unstyled ps-0">
-        <li class="d-flex gap-2 mb-2">
-          <i class="bi bi-person-check-fill text-purple-light mt-1"></i>
-          <div>Daftar terlebih dahulu dan login melalui menu <span class="fw-semibold">Login</span>.</div>
-        </li>
-        <li class="d-flex gap-2 mb-2">
-          <i class="bi bi-cart-check-fill text-purple-light mt-1"></i>
-          <div>Klik <span class="fw-semibold">"Sewa Sekarang"</span> lalu isi detail pemesananmu.</div>
-        </li>
-        <li class="d-flex gap-2 mb-2">
-          <i class="bi bi-send-check-fill text-purple-light mt-1"></i>
-          <div>Kami akan mengirim kostum langsung ke alamatmu.</div>
-        </li>
-        <li class="d-flex gap-2">
-          <i class="bi bi-clock-fill text-purple-light mt-1"></i>
-          <div>Durasi minimal sewa adalah <span class="fw-semibold">3 hari</span>.</div>
-        </li>
+      <div class="collapse mt-3 transition-collapse" id="infoSewa">
+        <ul class="list-unstyled ps-0">
+          <li class="d-flex gap-2 mb-2">
+            <i class="bi bi-person-check-fill text-purple-light mt-1"></i>
+            <div>Daftar terlebih dahulu dan login melalui menu <span class="fw-semibold">Login</span>.</div>
+          </li>
+          <li class="d-flex gap-2 mb-2">
+            <i class="bi bi-cart-check-fill text-purple-light mt-1"></i>
+            <div>Kamu bisa menyewa langsung dari produk yang tersedia, atau <span class="fw-semibold">ajukan kostum custom</span> sesuai keinginanmu.</div>
+          </li>
+          <li class="d-flex gap-2 mb-2">
+            <i class="bi bi-send-check-fill text-purple-light mt-1"></i>
+            <div>Setelah pengajuan disetujui, kostum akan dikirim langsung ke alamatmu.</div>
+          </li>
+          <li class="d-flex gap-2">
+            <i class="bi bi-clock-fill text-purple-light mt-1"></i>
+            <div>Durasi minimal sewa adalah <span class="fw-semibold">3 hari</span>.</div>
+          </li>
         </ul>
+      </div>
 
-        </div> -->
+      <p class="mt-3 mb-2 text-secondary">
+        Ingin kostum karakter favoritmu yang belum ada di katalog? Isi formulir berikut dan ajukan kostum custom sesuai kebutuhanmu!
+      </p>
+
 
         <!-- CTA -->
-        <a href="#" class="btn btn-purple mt-3">Sewa Sekarang</a>
+        @auth
+        <a href="{{ url('/ajukan-kostum') }}" class="btn text-white mt-3" style="background-color: #a259ff;"> Ajukan Kostum Custom Sekarang</a>
+        @endauth
+        @guest
+        <a href="{{ route('login') }}" class="btn text-white mt-3" style="background-color: #a259ff;">
+            Ajukan Kostum Custom Sekarang
+        </a>
+        @endguest
       </div>
 
       <!-- GAMBAR -->
       <div class="hero-image-wrapper d-flex justify-content-center align-items-end flex-shrink-0" style="max-width: 350px;">
         <img src="{{ asset('front/assets/her.png') }}" alt="cosplayer" class="hero-image w-100" style="object-fit: contain;">
       </div>
+      
 
     </div>
   </div>

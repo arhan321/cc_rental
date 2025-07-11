@@ -2,15 +2,17 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Models\Kostum;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Kostum;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Forms\Components\{FileUpload, Select, Textarea, TextInput};
-use Filament\Tables\Columns\{ImageColumn, TextColumn};
+use Filament\Resources\Resource;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Admin\Resources\KostumResource\Pages;
+use Filament\Tables\Columns\{ImageColumn, TextColumn};
+use Filament\Forms\Components\{FileUpload, Select, Textarea, TextInput};
 
 class KostumResource extends Resource
 {
@@ -78,23 +80,76 @@ class KostumResource extends Resource
     /* ------------------------------------------------------------------ */
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            TextColumn::make('id')->label('ID')->sortable()->searchable(),
-            TextColumn::make('nama_kostum')->label('Nama')->sortable()->searchable(),
-            TextColumn::make('category.name')->label('Kategori')->sortable(),
-            TextColumn::make('ukuran')->label('Ukuran')->sortable(),
-            TextColumn::make('harga_sewa')->label('Harga')->money('IDR')->sortable(),
-            TextColumn::make('stok')->label('Stok'),
-            TextColumn::make('status')->label('Status'),
-            ImageColumn::make('image')->label('Gambar')->size(50)->rounded(),
-        ])
-        ->actions([
-            Tables\Actions\ViewAction::make(),
-            Tables\Actions\EditAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\DeleteBulkAction::make(),
-        ]);
+        return $table
+    ->columns([
+        TextColumn::make('id')
+            ->label('ID')
+            ->sortable()
+            ->searchable()
+            ->alignCenter(),
+
+        TextColumn::make('nama_kostum')
+            ->label('Nama')
+            ->sortable()
+            ->searchable()
+            ->limit(30),
+
+        TextColumn::make('category.name')
+            ->label('Kategori')
+            ->sortable()
+            ->badge()
+            ->color('gray'),
+
+        TextColumn::make('ukuran')
+            ->label('Ukuran')
+            ->sortable()
+            ->alignCenter(),
+
+        TextColumn::make('harga_sewa')
+            ->label('Harga')
+            ->money('IDR', true)
+            ->sortable()
+            ->alignRight(),
+
+        BadgeColumn::make('status')
+            ->label('Status')
+            ->colors([
+                'success' => 'Tersedia',
+                'danger' => 'Terbooking',
+            ])
+            ->sortable(),
+
+        ImageColumn::make('image')
+            ->label('Gambar')
+            ->size(50)
+            ->rounded(),
+    ])
+
+    ->filters([
+        SelectFilter::make('status')
+            ->label('Status')
+            ->options([
+                'Tersedia'   => 'Tersedia',
+                'Terbooking' => 'Terbooking',
+            ]),
+    ])
+
+    ->actions([
+        Tables\Actions\ViewAction::make(),
+        Tables\Actions\EditAction::make(),
+        Tables\Actions\DeleteAction::make()
+            ->modalHeading('Hapus Kostum')
+            ->modalDescription('Yakin ingin menghapus kostum ini?')
+            ->modalButton('Ya, Hapus'),
+    ])
+
+    ->bulkActions([
+        Tables\Actions\DeleteBulkAction::make()
+            ->label('Hapus Terpilih')
+            ->modalHeading('Konfirmasi Hapus')
+            ->modalDescription('Yakin ingin menghapus semua kostum yang dipilih?')
+            ->modalButton('Hapus Sekarang'),
+    ]);
     }
 
     public static function getPages(): array

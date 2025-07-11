@@ -28,6 +28,7 @@ Livewire::setScriptRoute(function ($handle) {
 // });
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
+Route::get('/ajukan-kostum', [FrontendController::class, 'showFormPengajuan'])->name('form.pengajuan');
 
 Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [AuthController::class, 'register']);;
@@ -56,4 +57,7 @@ Route::get('/histori', [OrderController::class, 'history'])->name('frontend.hist
     Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::get('/pay-again/{order}',  [OrderController::class, 'payAgain'])
          ->name('orders.payAgain');
+    Route::get('/riwayat-custom', [FrontendController::class, 'riwayatCustom'])->name('riwayat.custom');
+
+    Route::post('/ajukan-kostum', [FrontendController::class, 'storePengajuanKostum'])->name('custom-request.store');
 });

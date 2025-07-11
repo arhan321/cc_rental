@@ -8,7 +8,11 @@ use App\Models\Order;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\HistoryOrderResource\Pages;
 use App\Filament\Admin\Resources\HistoryOrderResource\RelationManagers;
@@ -32,42 +36,72 @@ class HistoryOrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Order::where('status', 'Selesai')) // Menyaring hanya order dengan status 'Selesai'
-            ->columns([
-                Tables\Columns\TextColumn::make('nomor_pesanan') // Menampilkan Kode Order
-                    ->label('Order ID')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('profile.nama_lengkap') // Nama customer dari relasi profile
-                    ->label('Customer Name')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('tanggal_order') // Tanggal order
-                    ->label('Order Date')
-                    ->sortable()
-                    ->date(),
-                Tables\Columns\TextColumn::make('tanggal_batas_sewa') // Tanggal batas sewa
-                    ->label('Rental End Date')
-                    ->sortable()
-                    ->date(),
-                Tables\Columns\TextColumn::make('total_harga') // Total harga
-                    ->label('Total Price')
-                    ->sortable()
-                    ->money('IDR'),
-                Tables\Columns\TextColumn::make('status') // Status yang hanya akan menampilkan 'Selesai'
-                    ->label('Status'),
-            ])
-            ->filters([ // Bisa menambahkan filter jika diperlukan
-                // Add filters here
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make() // Menambahkan aksi untuk melihat detail order
-                    ->extraAttributes(['class' => 'bg-indigo-600 text-white rounded-lg py-2 px-4 hover:bg-indigo-700 transition-all']),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make() // Menambahkan bulk delete action
-                        ->extraAttributes(['class' => 'bg-red-500 text-white hover:bg-red-600 transition-all rounded-lg py-2 px-4']),
+    ->query(Order::query()->where('status', 'Selesai')) // Filter query
+    ->columns([
+        TextColumn::make('nomor_pesanan')
+            ->label('Order ID')
+            ->sortable()
+            ->searchable()
+            ->badge()
+            ->color('primary'),
+
+        TextColumn::make('profile.nama_lengkap')
+            ->label('Customer Name')
+            ->sortable()
+            ->searchable()
+            ->limit(25),
+
+        TextColumn::make('tanggal_order')
+            ->label('Order Date')
+            ->sortable()
+            ->date()
+            ->alignCenter(),
+
+        TextColumn::make('tanggal_batas_sewa')
+            ->label('Rental End Date')
+            ->sortable()
+            ->date()
+            ->alignCenter(),
+
+        TextColumn::make('total_harga')
+            ->label('Total Price')
+            ->money('IDR', true)
+            ->sortable()
+            ->alignRight(),
+
+        TextColumn::make('status')
+            ->label('Status')
+            ->badge()
+            ->color('success')
+            ->alignCenter(),
+    ])
+
+    ->filters([
+        // Tambahkan filter jika ingin filter tanggal/order/profile
+    ])
+
+    ->actions([
+        ViewAction::make()
+            ->tooltip('Lihat Detail Order')
+            ->icon('heroicon-o-eye')
+            ->color('indigo')
+            ->button()
+            ->extraAttributes([
+                'class' => 'rounded-md px-3 py-1 text-white bg-indigo-600 hover:bg-indigo-700 transition-all'
+            ]),
+    ])
+
+    ->bulkActions([
+        BulkActionGroup::make([
+            DeleteBulkAction::make()
+                ->label('Hapus Terpilih')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->extraAttributes([
+                    'class' => 'bg-red-500 text-white rounded-md px-3 py-1 hover:bg-red-600 transition-all'
                 ]),
-            ]);
+        ]),
+    ]);
     }
 
     public static function getRelations(): array

@@ -25,4 +25,9 @@ class Profile extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function customRequests()
+{
+    return $this->hasMany(CustomRequest::class, 'profile_id');
+}
 }

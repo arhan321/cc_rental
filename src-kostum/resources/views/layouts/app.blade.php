@@ -48,6 +48,11 @@
         </li>
         @auth
         <li class="nav-item">
+          <a class="nav-link px-2 py-1 fw-normal small" href="{{ route('riwayat.custom') }}" style="color: #6b21a8;">Pengajuan</a>
+        </li>
+        @endauth
+        @auth
+        <li class="nav-item">
           <a class="nav-link px-2 py-1 fw-normal small" href="{{ route('orders.index') }}" style="color: #6b21a8;">Pesanan</a>
         </li>
         @endauth
@@ -61,6 +66,7 @@
           <a class="nav-link px-2 py-1 fw-normal small" href="{{ route('frontend.histori') }}" style="color: #6b21a8;">History Order</a>
         </li>
         @endauth
+        
 
           @auth
 @php($p = Auth::user()->profile)
@@ -159,7 +165,7 @@
           <i class="bi bi-disc-fill fs-3 me-2 text-white"></i> CCC RENTAL
         </h4>
         <p class="text-white-50 small">
-          Lorem ipsum dolor sit amet consectetur. Egestas mauris magna varius enim ultricies quisque. Volutpat integer lacus commodo sit ullamcorper sit. Viverra eget pulvinar.
+          CCC RENTAL adalah solusi terbaik untuk kebutuhan kostum Anda. Kami menyediakan berbagai pilihan kostum berkualitas untuk segala acara. Nikmati kemudahan penyewaan dengan proses cepat, harga terjangkau, dan layanan terpercaya.
         </p>
         <div class="d-flex gap-3 mt-3">
           <a href="#" class="text-white-50 fs-5"><i class="bi bi-facebook"></i></a>
@@ -173,10 +179,14 @@
       <div class="col-md-2">
         <h6 class="fw-semibold mb-3">Company</h6>
         <ul class="list-unstyled small text-white-50">
-          <li><a href="#" class="text-decoration-none text-white-50">Home</a></li>
-          <li><a href="#" class="text-decoration-none text-white-50">Customes</a></li>
-          <li><a href="#" class="text-decoration-none text-white-50">Pesanan</a></li>
-          <li><a href="#" class="text-decoration-none text-white-50">Pengembalian baju</a></li>
+           <li><a href="{{ url('/') }}" class="text-decoration-none text-white-50">Home</a></li>
+    <li><a href="{{ url('/') }}" class="text-decoration-none text-white-50">Product</a></li>
+    @auth
+    <li><a href="{{ route('riwayat.custom') }}" class="text-decoration-none text-white-50">Pengajuan</a></li>
+    <li><a href="{{ route('orders.index') }}" class="text-decoration-none text-white-50">Pesanan</a></li>
+    <li><a href="{{ route('pengembalian.index') }}" class="text-decoration-none text-white-50">Pengembalian</a></li>
+    <li><a href="{{ route('frontend.histori') }}" class="text-decoration-none text-white-50">History Order</a></li>
+    @endauth
         </ul>
       </div>
 
@@ -188,18 +198,13 @@
         </ul>
       </div>
 
-      <div class="col-md-2">
-        <h6 class="fw-semibold mb-3">Informasi kamuu</h6>
-        <ul class="list-unstyled small text-white-50">
-
-        </ul>
-      </div>
+      
 
       <div class="col-md-2">
         <h6 class="fw-semibold mb-3">Info kontak</h6>
         <ul class="list-unstyled small text-white-50">
-          <li><i class="bi bi-telephone me-2"></i> +62 896-6289-2649</li>
-          <li><i class="bi bi-envelope me-2"></i> febru&nadia@gmail.com</li>
+          <li><i class="bi bi-telephone me-2"></i> +62 851-6100-9881</li>
+          <li><i class="bi bi-envelope me-2"></i> itachi@gmail.com</li>
           <li><i class="bi bi-geo-alt me-2"></i> jakarta <br> Manhattan 18920</li>
         </ul>
       </div>

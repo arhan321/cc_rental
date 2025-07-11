@@ -9,7 +9,11 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\ProfileResource\Pages;
 use App\Filament\Admin\Resources\ProfileResource\RelationManagers;
@@ -69,50 +73,98 @@ class ProfileResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('users_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nama_lengkap')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nomor_telepon')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('instagram')
-                ->label('Instagram')
-                ->searchable()
-                ->formatStateUsing(fn ($state) => $state ? '@'.$state : '-'),
-                Tables\Columns\TextColumn::make('jenis_kelamin')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('tanggal_lahir')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('avatar_url')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+return $table
+    ->columns([
+        TextColumn::make('nama_lengkap')
+            ->label('User')
+            ->searchable()
+            ->sortable()
+            ->icon('heroicon-o-user')
+            ->wrap()
+            ->alignCenter()
+            ->weight('bold')
+            ->description(fn ($record) => 'Email: ' . ($record->user->email ?? '-'))
+            ->badge()
+            ->color('gray'),
+
+
+        TextColumn::make('nomor_telepon')
+            ->label('No. Telepon')
+            ->searchable()
+            ->icon('heroicon-o-phone')
+            ->iconPosition('before'),
+
+        TextColumn::make('instagram')
+            ->label('Instagram')
+            ->searchable()
+            ->formatStateUsing(fn ($state) => $state ? '@' . $state : '-')
+            ->icon('heroicon-o-camera'),
+
+        TextColumn::make('jenis_kelamin')
+            ->label('Jenis Kelamin')
+            ->searchable()
+            ->badge()
+            ->color(fn ($state) => $state === 'Perempuan' ? 'pink' : 'blue')
+            ->alignCenter(),
+
+        TextColumn::make('tanggal_lahir')
+            ->label('Tanggal Lahir')
+            ->date('d M Y')
+            ->sortable()
+            ->alignCenter(),
+
+        TextColumn::make('avatar_url')
+            ->label('Foto Profil')
+            ->url(fn ($state) => $state)
+            ->openUrlInNewTab()
+            ->limit(20)
+            ->tooltip('Klik untuk melihat foto'),
+
+        TextColumn::make('created_at')
+            ->label('Dibuat')
+            ->dateTime('d M Y H:i')
+            ->sortable()
+            ->toggleable(isToggledHiddenByDefault: true),
+
+        TextColumn::make('updated_at')
+            ->label('Diperbarui')
+            ->dateTime('d M Y H:i')
+            ->sortable()
+            ->toggleable(isToggledHiddenByDefault: true),
+
+        TextColumn::make('deleted_at')
+            ->label('Dihapus')
+            ->dateTime('d M Y H:i')
+            ->sortable()
+            ->toggleable(isToggledHiddenByDefault: true),
+    ])
+
+    ->filters([
+        // Tambahkan filter jika diperlukan (misal: filter gender atau created_at range)
+    ])
+
+    ->actions([
+        EditAction::make()
+            ->icon('heroicon-o-pencil')
+            ->color('warning')
+            ->button()
+            ->extraAttributes([
+                'class' => 'text-white bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded transition-all',
+            ]),
+    ])
+
+    ->bulkActions([
+        BulkActionGroup::make([
+            DeleteBulkAction::make()
+                ->label('Hapus Terpilih')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->extraAttributes([
+                    'class' => 'text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded transition-all',
                 ]),
-            ]);
+        ]),
+    ]);
+
     }
 
     public static function getRelations(): array

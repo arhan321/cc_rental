@@ -9,6 +9,12 @@ use App\Models\Kostum;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Admin\Resources\OrderResource\Pages;
 use Filament\Forms\Components\{DatePicker, Hidden, Repeater, Select, TextInput, Textarea};
 
@@ -111,27 +117,95 @@ class OrderResource extends Resource
     /* ------------------------------------------------------------------ */
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            Tables\Columns\TextColumn::make('nomor_pesanan')->label('No'),
-            Tables\Columns\TextColumn::make('profile.nama_lengkap')->label('Profile'),
-            Tables\Columns\TextColumn::make('kostum_summary')
-                ->label('Kostum')
-                ->html()
-                ->getStateUsing(fn ($record) =>
-                    $record->orderItems
-                        ->map(fn ($item) => optional($item->kostums)->nama_kostum)
-                        ->filter()
-                        ->implode('<br>')
-                ),
-            Tables\Columns\TextColumn::make('tanggal_order')->date()->label('Order'),
-            Tables\Columns\TextColumn::make('tanggal_batas_sewa')->date()->label('End'),
-            Tables\Columns\TextColumn::make('durasi_sewa')->label('Durasi'),
-            Tables\Columns\TextColumn::make('total_harga')->label('Total')->money('IDR'),
-            Tables\Columns\TextColumn::make('status')->label('Status'),
-        ])
-        ->actions([
-            Tables\Actions\EditAction::make(),
-        ]);
+
+return $table
+    ->columns([
+        TextColumn::make('nomor_pesanan')
+            ->label('No')
+            ->searchable()
+            ->sortable()
+            ->badge()
+            ->alignCenter(),
+
+        TextColumn::make('profile.nama_lengkap')
+            ->label('Profile')
+            ->searchable()
+            ->sortable()
+            ->icon('heroicon-o-user'),
+
+        TextColumn::make('kostum_summary')
+            ->label('Kostum')
+            ->html()
+            ->getStateUsing(fn ($record) =>
+                '<ul style="padding-left:1rem;margin:0;">' .
+                $record->orderItems
+                    ->map(fn ($item) => '<li>' . optional($item->kostums)->nama_kostum . '</li>')
+                    ->filter()
+                    ->implode('') .
+                '</ul>'
+            ),
+
+        TextColumn::make('tanggal_order')
+            ->label('Order')
+            ->date('d M Y')
+            ->sortable(),
+
+        TextColumn::make('tanggal_batas_sewa')
+            ->label('End')
+            ->date('d M Y')
+            ->sortable(),
+
+        TextColumn::make('durasi_sewa')
+            ->label('Durasi')
+            ->suffix(' hari')
+            ->alignCenter(),
+
+        TextColumn::make('total_harga')
+            ->label('Total')
+            ->money('IDR', true)
+            ->alignEnd(),
+
+        BadgeColumn::make('status')
+            ->label('Status')
+            ->colors([
+                'primary' => 'Menunggu',
+                'warning' => 'Diproses',
+                'info'    => 'Siap diambil',
+                'success' => 'Selesai',
+                'danger'  => 'Dibatalkan',
+            ])
+            ->sortable(),
+    ])
+
+    ->filters([
+        SelectFilter::make('status')
+            ->label('Status Pesanan')
+            ->options([
+                'Menunggu'    => 'Menunggu',
+                'Diproses'    => 'Diproses',
+                'Siap diambil'=> 'Siap diambil',
+                'Selesai'     => 'Selesai',
+                'Dibatalkan'  => 'Dibatalkan',
+            ]),
+    ])
+
+    ->actions([
+        ViewAction::make(),
+        EditAction::make(),
+        DeleteAction::make()
+            ->modalHeading('Hapus Pesanan')
+            ->modalDescription('Yakin ingin menghapus pesanan ini?')
+            ->modalButton('Ya, Hapus'),
+    ])
+
+    ->bulkActions([
+        Tables\Actions\DeleteBulkAction::make()
+            ->label('Hapus Terpilih')
+            ->modalHeading('Hapus Pesanan Terpilih')
+            ->modalDescription('Yakin ingin menghapus semua pesanan yang dipilih?')
+            ->modalButton('Ya, Hapus Semua'),
+    ]);
+
     }
 
     public static function getPages(): array
