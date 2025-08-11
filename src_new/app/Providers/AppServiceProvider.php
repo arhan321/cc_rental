@@ -42,5 +42,6 @@ class AppServiceProvider extends ServiceProvider
         MountableAction::configureUsing(function (MountableAction $action) {
             $action->modalFooterActionsAlignment(Alignment::Right);
         });
+        \Illuminate\Support\Facades\URL::forceScheme('https');
     }
 }
