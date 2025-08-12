@@ -21,6 +21,10 @@ class KostumResource extends Resource
     protected static ?string $navigationLabel = 'Kostum';
     protected static ?string $navigationGroup = 'Product Management';
 
+    public static function getPluralLabel(): string
+{
+    return 'Kostum';
+}
     /* ------------------------------------------------------------------ */
     /*  FORM                                                              */
     /* ------------------------------------------------------------------ */

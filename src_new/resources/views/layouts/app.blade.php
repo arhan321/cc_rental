@@ -168,10 +168,10 @@
           CCC RENTAL adalah solusi terbaik untuk kebutuhan kostum Anda. Kami menyediakan berbagai pilihan kostum berkualitas untuk segala acara. Nikmati kemudahan penyewaan dengan proses cepat, harga terjangkau, dan layanan terpercaya.
         </p>
         <div class="d-flex gap-3 mt-3">
-          <a href="#" class="text-white-50 fs-5"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-white-50 fs-5"><i class="bi bi-twitter"></i></a>
-          <a href="#" class="text-white-50 fs-5"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="text-white-50 fs-5"><i class="bi bi-linkedin"></i></a>
+          {{-- <a href="#" class="text-white-50 fs-5"><i class="bi bi-facebook"></i></a> --}}
+          {{-- <a href="#" class="text-white-50 fs-5"><i class="bi bi-twitter"></i></a> --}}
+          <a href="https://www.instagram.com/ccc_rental/" class="text-white-50 fs-5"><i class="bi bi-instagram"></i></a>
+          {{-- <a href="#" class="text-white-50 fs-5"><i class="bi bi-linkedin"></i></a> --}}
         </div>
       </div>
 
@@ -204,14 +204,14 @@
         <h6 class="fw-semibold mb-3">Info kontak</h6>
         <ul class="list-unstyled small text-white-50">
           <li><i class="bi bi-telephone me-2"></i> +62 851-6100-9881</li>
-          <li><i class="bi bi-envelope me-2"></i> itachi@gmail.com</li>
-          <li><i class="bi bi-geo-alt me-2"></i> jakarta <br> Manhattan 18920</li>
+          {{-- <li><i class="bi bi-envelope me-2"></i> itachi@gmail.com</li> --}}
+          <li><i class="bi bi-geo-alt me-2"></i> Graha Sevilla Blok T15/03 , RT02 RW07, Kecamatan Panongan, Kabupaten Tangerang, Banten</li>
         </ul>
       </div>
     </div>
 
     <hr class="border-white mt-5 mb-3" style="opacity: 0.1;">
-    <p class="text-center small text-white-50 mb-0">CCC RENTAL © 2000–2024. All Rights Reserved</p>
+    <p class="text-center small text-white-50 mb-0">CCC RENTAL</p>
   </div>
 </footer>
 

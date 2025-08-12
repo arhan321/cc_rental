@@ -22,9 +22,13 @@ class HistoryOrderResource extends Resource
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    protected static ?string $navigationLabel = 'History Orders';  // Label yang muncul di menu navigasi
+    // protected static ?string $navigationLabel = 'History Orders';  // Label yang muncul di menu navigasi
+    protected static ?string $navigationLabel = 'History Orders';
     protected static ?string $navigationGroup = 'Order Management';
-
+public static function getPluralLabel(): string
+{
+    return 'History Orders';
+}
     public static function form(Form $form): Form
     {
         return $form

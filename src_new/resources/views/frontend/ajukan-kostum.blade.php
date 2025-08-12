@@ -90,7 +90,7 @@
           <!-- Catatan -->
           <div class="mb-4">
             <label for="catatan" class="form-label fw-semibold">Catatan Tambahan <span class="text-muted">(Opsional)</span></label>
-            <textarea class="form-control rounded-3 shadow-sm" id="catatan" name="catatan" rows="3" placeholder="Misal: warna khusus, tema acara, dll."></textarea>
+            <textarea class="form-control rounded-3 shadow-sm" id="catatan" name="catatan" rows="3" placeholder="Misal: Nama, Anime / Asal Karakter"></textarea>
           </div>
 
           <!-- Tombol Submit -->
